@@ -1,7 +1,9 @@
+#all imports
 import sys
 import pandas as pd
 from sqlalchemy import create_engine
 
+#this function is used to load data into dataframes and merge them on id column
 def load_data(messages_filepath, categories_filepath):
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
@@ -9,6 +11,7 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 
+#this function is used to clean the data and return a concatenated dataframe
 def clean_data(df):
     categories = pd.DataFrame(df.categories.str.split(';',-1).tolist())
     row = categories.iloc[0]
@@ -26,6 +29,7 @@ def clean_data(df):
     return df1
 
 
+#this function is used to save the data into SQL table
 def save_data(df, database_filename):
     Database_ = 'sqlite:///' + database_filename
     engine = create_engine(Database_)
