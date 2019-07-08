@@ -1,3 +1,4 @@
+#all imports
 import sys
 import pandas as pd
 from sqlalchemy import create_engine
@@ -14,6 +15,7 @@ from sklearn.multioutput import MultiOutputClassifier
 import pickle
 
 
+#this function is used to read data from SQL table and load it into df and return X, Y and category_names
 def load_data(database_filepath):
     Database_ = 'sqlite:///' + database_filepath
     engine = create_engine(Database_)
@@ -23,6 +25,7 @@ def load_data(database_filepath):
     category_names = Y.columns
     return X, Y, category_names
 
+#this function is used to tokenize the text and clean it and return cleaned list of tokens
 def tokenize(text):
     tokens = nltk.word_tokenize(text)
     lemmatizer = nltk.WordNetLemmatizer()
@@ -33,6 +36,7 @@ def tokenize(text):
     return list_
 
 
+#this function is used to build a ML pipeline and return model
 def build_model():
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -48,6 +52,7 @@ def build_model():
     return cv
 
 
+#this function is used to evaluate the model
 def evaluate_model(model, X_test, Y_test, category_names):
     Y_pred = model.predict(X_test)
     for counter, column in enumerate(Y_test):
@@ -55,6 +60,7 @@ def evaluate_model(model, X_test, Y_test, category_names):
         print(classification_report(Y_test[column], Y_pred[:, counter]), category_names)
 
 
+#this function is used to save the model to pickle dump
 def save_model(model, model_filepath):
     pickle.dump(model, open(model_filepath, 'wb'))
 
